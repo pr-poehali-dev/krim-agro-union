@@ -4,6 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 interface Document {
@@ -51,6 +55,17 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmitApplication = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast({
+      title: 'Заявка отправлена!',
+      description: 'Мы свяжемся с вами в ближайшее время.',
+    });
+    setIsDialogOpen(false);
+  };
 
   const categories = ['all', ...Array.from(new Set(documents.map(doc => doc.category)))];
 
@@ -74,6 +89,99 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground">Объединяем усилия для развития АПК</p>
               </div>
             </div>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Icon name="UserPlus" size={18} />
+                  Вступить в союз
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Заявка на вступление в союз</DialogTitle>
+                  <DialogDescription>
+                    Заполните форму, и мы свяжемся с вами для обсуждения условий членства
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmitApplication} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="org-name">Название организации *</Label>
+                      <Input id="org-name" required placeholder="ООО 'Название'" />
+                    </div>
+                    <div>
+                      <Label htmlFor="inn">ИНН *</Label>
+                      <Input id="inn" required placeholder="1234567890" />
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="contact-name">Контактное лицо *</Label>
+                      <Input id="contact-name" required placeholder="Иванов Иван Иванович" />
+                    </div>
+                    <div>
+                      <Label htmlFor="position">Должность *</Label>
+                      <Input id="position" required placeholder="Генеральный директор" />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="phone">Телефон *</Label>
+                      <Input id="phone" required type="tel" placeholder="+7 (XXX) XXX-XX-XX" />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">Email *</Label>
+                      <Input id="email" required type="email" placeholder="info@company.ru" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="address">Юридический адрес *</Label>
+                    <Input id="address" required placeholder="Республика Крым, г. ..." />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="activity">Основной вид деятельности *</Label>
+                    <Input id="activity" required placeholder="Растениеводство, животноводство и т.д." />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="employees">Количество сотрудников</Label>
+                    <Input id="employees" type="number" placeholder="50" />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="about">О вашей организации</Label>
+                    <Textarea 
+                      id="about" 
+                      placeholder="Расскажите о вашей компании, достижениях, планах развития..."
+                      className="min-h-[100px]"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="expectations">Что вы ожидаете от членства в союзе?</Label>
+                    <Textarea 
+                      id="expectations" 
+                      placeholder="Консультации, участие в проектах, представительство интересов..."
+                      className="min-h-[100px]"
+                    />
+                  </div>
+
+                  <div className="flex gap-3 justify-end">
+                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                      Отмена
+                    </Button>
+                    <Button type="submit">
+                      Отправить заявку
+                      <Icon name="Send" className="ml-2" size={16} />
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
           <nav className="mt-4">
             <div className="flex gap-2 flex-wrap">
@@ -83,6 +191,7 @@ const Index = () => {
                 { id: 'activity', label: 'Деятельность', icon: 'Briefcase' },
                 { id: 'projects', label: 'Проекты', icon: 'Rocket' },
                 { id: 'documents', label: 'Документы', icon: 'FileText' },
+                { id: 'membership', label: 'Членство', icon: 'Users' },
                 { id: 'contacts', label: 'Контакты', icon: 'Mail' },
               ].map((item) => (
                 <Button
@@ -427,6 +536,116 @@ const Index = () => {
                   <p className="text-muted-foreground">Документы не найдены</p>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'membership' && (
+          <div className="animate-fade-in py-16">
+            <div className="container mx-auto px-4">
+              <h2 className="text-4xl font-bold mb-8">Членство в союзе</h2>
+              
+              <div className="mb-12">
+                <Card className="bg-secondary/10 border-secondary">
+                  <CardHeader>
+                    <CardTitle className="text-2xl flex items-center gap-2">
+                      <Icon name="Star" className="text-secondary" />
+                      Преимущества членства
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {[
+                        { icon: 'Users', title: 'Сетевое взаимодействие', desc: 'Установление деловых контактов с коллегами по отрасли' },
+                        { icon: 'BookOpen', title: 'Обучение и развитие', desc: 'Доступ к образовательным программам и экспертизе' },
+                        { icon: 'TrendingUp', title: 'Развитие бизнеса', desc: 'Участие в совместных проектах и программах' },
+                        { icon: 'Shield', title: 'Защита интересов', desc: 'Представительство во взаимодействии с властью' },
+                        { icon: 'FileText', title: 'Информационная поддержка', desc: 'Актуальная информация об отраслевых изменениях' },
+                        { icon: 'Award', title: 'Репутация', desc: 'Повышение статуса и доверия к вашей организации' },
+                      ].map((benefit, index) => (
+                        <div key={index} className="flex gap-3">
+                          <div className="w-10 h-10 bg-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Icon name={benefit.icon as any} className="text-secondary" size={20} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold mb-1">{benefit.title}</h4>
+                            <p className="text-sm text-muted-foreground">{benefit.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Требования к кандидатам</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {[
+                        'Зарегистрированная организация в сфере АПК',
+                        'Юридический адрес в Республике Крым',
+                        'Отсутствие задолженности по налогам и сборам',
+                        'Соблюдение трудового законодательства',
+                        'Готовность к активному участию в работе союза',
+                      ].map((req, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <Icon name="CheckCircle2" className="text-secondary mt-0.5 flex-shrink-0" size={18} />
+                          <span className="text-muted-foreground">{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Процесс вступления</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        { step: '1', title: 'Подача заявки', desc: 'Заполните форму заявки на вступление' },
+                        { step: '2', title: 'Рассмотрение', desc: 'Экспертная оценка заявки (5-10 рабочих дней)' },
+                        { step: '3', title: 'Собеседование', desc: 'Встреча с представителями союза' },
+                        { step: '4', title: 'Решение', desc: 'Утверждение членства правлением союза' },
+                      ].map((item, index) => (
+                        <div key={index} className="flex gap-3">
+                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold flex-shrink-0">
+                            {item.step}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">{item.title}</h4>
+                            <p className="text-sm text-muted-foreground">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-3xl">Готовы присоединиться?</CardTitle>
+                  <CardDescription className="text-lg">
+                    Заполните заявку, и мы свяжемся с вами в ближайшее время
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex justify-center">
+                  <Button 
+                    size="lg" 
+                    className="gap-2"
+                    onClick={() => setIsDialogOpen(true)}
+                  >
+                    <Icon name="FileEdit" size={20} />
+                    Заполнить заявку на вступление
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )}
