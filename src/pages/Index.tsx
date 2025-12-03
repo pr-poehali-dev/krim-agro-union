@@ -672,14 +672,14 @@ const Index = () => {
                         <Icon name="Phone" className="text-secondary mt-1" size={20} />
                         <div>
                           <p className="font-medium">Телефон</p>
-                          <p className="text-muted-foreground">+7 (XXX) XXX-XX-XX</p>
+                          <a href="tel:+79787014257" className="text-muted-foreground hover:text-secondary transition-colors">+7 (978) 701-42-57</a>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <Icon name="Mail" className="text-secondary mt-1" size={20} />
                         <div>
                           <p className="font-medium">Email</p>
-                          <p className="text-muted-foreground">info@apk-crimea.ru</p>
+                          <a href="mailto:agropromsoyuzrk@mail.ru" className="text-muted-foreground hover:text-secondary transition-colors">agropromsoyuzrk@mail.ru</a>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -749,8 +749,8 @@ const Index = () => {
               <h3 className="font-bold text-lg mb-4">Контакты</h3>
               <ul className="space-y-2 text-primary-foreground/80">
                 <li>г. Симферополь, Республика Крым</li>
-                <li>info@apk-crimea.ru</li>
-                <li>+7 (XXX) XXX-XX-XX</li>
+                <li><a href="mailto:agropromsoyuzrk@mail.ru" className="hover:text-primary-foreground transition-colors">agropromsoyuzrk@mail.ru</a></li>
+                <li><a href="tel:+79787014257" className="hover:text-primary-foreground transition-colors">+7 (978) 701-42-57</a></li>
               </ul>
             </div>
           </div>
